@@ -8,6 +8,15 @@ interface GetTemplatesQuery {
   query?: string;
 }
 
+
+interface CreateTemplateBody {
+  name: string;
+  subject: string;
+  body: string;
+  language: string;
+  version_number: number;
+}
+
 export const get_templates = async (
   request: FastifyRequest<{ Querystring: GetTemplatesQuery }>,
   reply: FastifyReply
@@ -94,6 +103,81 @@ export const get_templates = async (
     reply.code(500).send({
       success: false,
       message: 'Failed to fetch templates',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+};
+
+
+export const create_template = async (
+  request: FastifyRequest<{ Body: CreateTemplateBody }>,
+  reply: FastifyReply
+) => {
+  try {
+    const { name, subject, body, language, version_number } = request.body;
+
+    // Validate required fields
+    if (!name || !subject || !body || !language || version_number === undefined) {
+      return reply.code(400).send({
+        success: false,
+        message: 'Missing required fields: name, subject, body, language, version_number',
+      });
+    }
+
+    // Validate version_number is a positive integer
+    if (!Number.isInteger(version_number) || version_number < 1) {
+      return reply.code(400).send({
+        success: false,
+        message: 'version_number must be a positive integer',
+      });
+    }
+
+    // Check if template with same name and language already exists
+    const existingTemplate = await request.server.prisma.template.findFirst({
+      where: {
+        name,
+        language,
+      },
+    });
+
+    if (existingTemplate) {
+      return reply.code(409).send({
+        success: false,
+        message: 'Template with this name and language already exists',
+      });
+    }
+
+    // Create template
+    const template = await request.server.prisma.template.create({
+      data: {
+        name,
+        subject,
+        body,
+        language,
+        version_number,
+      },
+      select: {
+        id: true,
+        name: true,
+        subject: true,
+        body: true,
+        language: true,
+        version_number: true,
+        createdAt: true,
+      },
+    });
+
+    // Send response
+    reply.code(201).send({
+      success: true,
+      data: template,
+      message: 'Template created successfully',
+    });
+  } catch (error) {
+    request.log.error(error);
+    reply.code(500).send({
+      success: false,
+      message: 'Failed to create template',
       error: error instanceof Error ? error.message : 'Unknown error',
     });
   }

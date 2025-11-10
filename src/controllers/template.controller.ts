@@ -1,51 +1,100 @@
-import type { FastifyReply, FastifyRequest } from "fastify";
-import * as TemplateService from "../services/template.service.ts";
-import { successResponse } from "../utils/response.ts";
+// src/controllers/template.controller.ts
+import type { FastifyRequest, FastifyReply } from 'fastify';
 
-export async function render_template(req: FastifyRequest<{ Params: { template_id: string }; Body: { variables: Record<string, any> } }>,
-  reply: FastifyReply) {
-    const { template_id } = req.params;
-    const { variables } = req.body;
-
-    // check how to get language preference from headers
-    const language = req.headers['accept-language'] || 'en';
-
-     const result = await TemplateService.render(template_id, variables);
-  return successResponse(result, 'Template rendered successfully');
-
-  }
-
-  export async function get_template(req: FastifyRequest, reply: FastifyReply) {
-  const { template_id } = req.params as { template_id: string };
-  const data = await TemplateService.get(template_id);
-  return successResponse(data, 'Template fetched');
-}
-
-
-// ✅ Define the expected body structure for template creation
-interface CreateTemplateBody {
-  name: string;
-  subject: string;
-  body: string;
+interface GetTemplatesQuery {
+  page?: string;
+  limit?: string;
   language?: string;
-  version_number?: number;
+  query?: string;
 }
 
-
-export async function create_template(
-  req: FastifyRequest<{ Body: CreateTemplateBody }>,
+export const get_templates = async (
+  request: FastifyRequest<{ Querystring: GetTemplatesQuery }>,
   reply: FastifyReply
-) {
-  const { name, subject, body, language, version_number } = req.body;
+) => {
+  try {
+    // Extract query parameters with defaults
+    const page = Math.max(1, parseInt(request.query.page || '1') || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(request.query.limit || '10') || 10));
+    const language = request.query.language;
+    const searchQuery = request.query.query;
 
-  const data = await TemplateService.create({
-    name,
-    subject,
-    body,
-    language: language ?? 'en',          
-    version_number: version_number ?? 1, 
-  });
+    // Calculate offset for pagination
+    const offset = (page - 1) * limit;
 
-  return reply.code(201).send(successResponse(data, 'Template created'));
-}
+    // Build the where clause for filtering
+    const where: any = {};
 
+    // Filter by language if provided
+    if (language) {
+      where.language = language;
+    }
+
+    // Search by name or subject if query provided
+    if (searchQuery) {
+      where.OR = [
+        {
+          name: {
+            contains: searchQuery,
+            mode: 'insensitive', // Case-insensitive search
+          },
+        },
+        {
+          subject: {
+            contains: searchQuery,
+            mode: 'insensitive',
+          },
+        },
+      ];
+    }
+
+    // Fetch total count for pagination metadata
+    const total = await request.server.prisma.template.count({ where });
+
+    // Fetch templates with pagination and sorting
+    const templates = await request.server.prisma.template.findMany({
+      where,
+      skip: offset,
+      take: limit,
+      select: {
+        id: true,
+        name: true,
+        subject: true,
+        body: true,
+        language: true,
+        version_number: true,
+        createdAt: true,
+      },
+      orderBy: {
+        createdAt: 'desc', // Most recent first
+      },
+    });
+
+    // Calculate pagination metadata
+    const total_pages = Math.ceil(total / limit);
+    const has_next = page < total_pages;
+    const has_previous = page > 1;
+
+    // Send response
+    reply.code(200).send({
+      success: true,
+      data: templates,
+      message: 'Templates fetched successfully',
+      meta: {
+        total,
+        limit,
+        page,
+        total_pages,
+        has_next,
+        has_previous,
+      },
+    });
+  } catch (error) {
+    request.log.error(error);
+    reply.code(500).send({
+      success: false,
+      message: 'Failed to fetch templates',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+};

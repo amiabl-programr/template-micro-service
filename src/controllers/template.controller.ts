@@ -17,6 +17,14 @@ interface CreateTemplateBody {
   version_number: number;
 }
 
+interface UpdateTemplateBody {
+  name?: string;
+  subject?: string;
+  body?: string;
+  language?: string;
+  version_number?: number;
+}
+
 export const get_templates = async (
   request: FastifyRequest<{ Querystring: GetTemplatesQuery }>,
   reply: FastifyReply
@@ -108,6 +116,58 @@ export const get_templates = async (
   }
 };
 
+export const get_template_by_id = async (
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply
+) => {
+  try {
+    const { id } = request.params;
+
+    // Validate UUID format (optional but recommended)
+    if (!id || id.trim() === '') {
+      return reply.code(400).send({
+        success: false,
+        message: 'Template ID is required',
+      });
+    }
+
+    // Find template by ID
+    const template = await request.server.prisma.template.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        subject: true,
+        body: true,
+        language: true,
+        version_number: true,
+        createdAt: true,
+      },
+    });
+
+    // Return 404 if template not found
+    if (!template) {
+      return reply.code(404).send({
+        success: false,
+        message: 'Template not found',
+      });
+    }
+
+    // Send response
+    reply.code(200).send({
+      success: true,
+      data: template,
+      message: 'Template fetched successfully',
+    });
+  } catch (error) {
+    request.log.error(error);
+    reply.code(500).send({
+      success: false,
+      message: 'Failed to fetch template',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+};
 
 export const create_template = async (
   request: FastifyRequest<{ Body: CreateTemplateBody }>,
@@ -178,6 +238,102 @@ export const create_template = async (
     reply.code(500).send({
       success: false,
       message: 'Failed to create template',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+};
+
+export const update_template = async (
+  request: FastifyRequest<{ Params: { id: string }; Body: UpdateTemplateBody }>,
+  reply: FastifyReply
+) => {
+  try {
+    const { id } = request.params;
+    const updates = request.body;
+
+    // Validate ID
+    if (!id || id.trim() === '') {
+      return reply.code(400).send({
+        success: false,
+        message: 'Template ID is required',
+      });
+    }
+
+    // Validate that at least one field is provided for update
+    if (!updates || Object.keys(updates).length === 0) {
+      return reply.code(400).send({
+        success: false,
+        message: 'At least one field must be provided for update',
+      });
+    }
+
+    // Validate version_number if provided
+    if (updates.version_number !== undefined) {
+      if (!Number.isInteger(updates.version_number) || updates.version_number < 1) {
+        return reply.code(400).send({
+          success: false,
+          message: 'version_number must be a positive integer',
+        });
+      }
+    }
+
+    // Check if template exists
+    const existingTemplate = await request.server.prisma.template.findUnique({
+      where: { id },
+    });
+
+    if (!existingTemplate) {
+      return reply.code(404).send({
+        success: false,
+        message: 'Template not found',
+      });
+    }
+
+    // Check for duplicate name+language combination if updating those fields
+    if ((updates.name || updates.language) && 
+        (updates.name !== existingTemplate.name || updates.language !== existingTemplate.language)) {
+      const duplicate = await request.server.prisma.template.findFirst({
+        where: {
+          name: updates.name || existingTemplate.name,
+          language: updates.language || existingTemplate.language,
+          id: { not: id }, // Exclude current template
+        },
+      });
+
+      if (duplicate) {
+        return reply.code(409).send({
+          success: false,
+          message: 'Template with this name and language already exists',
+        });
+      }
+    }
+
+    // Update template
+    const updatedTemplate = await request.server.prisma.template.update({
+      where: { id },
+      data: updates,
+      select: {
+        id: true,
+        name: true,
+        subject: true,
+        body: true,
+        language: true,
+        version_number: true,
+        createdAt: true,
+      },
+    });
+
+    // Send response
+    reply.code(200).send({
+      success: true,
+      data: updatedTemplate,
+      message: 'Template updated successfully',
+    });
+  } catch (error) {
+    request.log.error(error);
+    reply.code(500).send({
+      success: false,
+      message: 'Failed to update template',
       error: error instanceof Error ? error.message : 'Unknown error',
     });
   }

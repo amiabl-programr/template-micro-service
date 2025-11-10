@@ -12,8 +12,8 @@ export const fastify_app = (): FastifyInstance => {
 
     // register plugins
     app.register(prisma);
-    app.register(healthRoute, { prefix: '/health' });
-    app.register(templatesRoute, { prefix: '/templates' });
+    app.register(healthRoute);
+    app.register(templatesRoute);
 
     // register routes
 

@@ -1,4 +1,3 @@
-// src/controllers/template.controller.ts (UPDATED)
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import { create_template_version } from './template-version.controller.ts';
 

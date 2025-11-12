@@ -4,6 +4,33 @@
 
 This project is a high-performance microservice designed for efficient template management, leveraging **TypeScript**, **Node.js** with **Fastify**, and **Prisma ORM** for robust data interactions with **PostgreSQL**. It features automatic versioning of templates and comprehensive API endpoints for CRUD operations.
 
+## Technologies Used
+
+This project is built using a modern technology stack to ensure performance, scalability, and maintainability.
+
+| Technology | Description |
+| Template Service API
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Fastify](https://img.shields.io/badge/Fastify-000000?style=for-the-badge&logo=fastify&logoColor=white)](https://www.fastify.io/)
+[![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue)](package.json)
+
+
+## Technologies Used
+
+| Technology                                    | Description                                                                            |
+| :-------------------------------------------- | :------------------------------------------------------------------------------------- |
+| [TypeScript](https://www.typescriptlang.org/) | Primary programming language, providing type safety and enhanced developer experience. |
+| [Node.js](https://nodejs.org/)                | JavaScript runtime environment for server-side execution.                              |
+| [Fastify](https://www.fastify.io/)            | High-performance, low-overhead, and plugin-oriented web framework.                     |
+| [Prisma](https://www.prisma.io/)              | Modern, type-safe ORM for Node.js and TypeScript, simplifying database access.         |
+| [PostgreSQL](https://www.postgresql.org/)     | Powerful, open-source object-relational database system.                               |
+| [ESLint](https://eslint.org/)                 | Pluggable JavaScript linter to maintain code quality and consistency.                  |
+| [Prettier](https://prettier.io/)              | Opinionated code formatter to enforce a consistent style across the codebase.          |
+
+
 ## Features
 
 - **Fastify**: High-performance, low-overhead web framework for building scalable APIs.
@@ -307,39 +334,12 @@ curl -X PATCH \
   }'
 ```
 
-## Technologies Used
-
-This project is built using a modern technology stack to ensure performance, scalability, and maintainability.
-
-| Technology | Description |
-| Template Service API
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![Fastify](https://img.shields.io/badge/Fastify-000000?style=for-the-badge&logo=fastify&logoColor=white)](https://www.fastify.io/)
-[![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=prisma&logoColor=white)](https://www.prisma.io/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue)](package.json)
-
-
-## Technologies Used
-
-This project is built using a modern technology stack to ensure performance, scalability, and maintainability.
-
-| Technology                                    | Description                                                                            |
-| :-------------------------------------------- | :------------------------------------------------------------------------------------- |
-| [TypeScript](https://www.typescriptlang.org/) | Primary programming language, providing type safety and enhanced developer experience. |
-| [Node.js](https://nodejs.org/)                | JavaScript runtime environment for server-side execution.                              |
-| [Fastify](https://www.fastify.io/)            | High-performance, low-overhead, and plugin-oriented web framework.                     |
-| [Prisma](https://www.prisma.io/)              | Modern, type-safe ORM for Node.js and TypeScript, simplifying database access.         |
-| [PostgreSQL](https://www.postgresql.org/)     | Powerful, open-source object-relational database system.                               |
-| [ESLint](https://eslint.org/)                 | Pluggable JavaScript linter to maintain code quality and consistency.                  |
-| [Prettier](https://prettier.io/)              | Opinionated code formatter to enforce a consistent style across the codebase.          |
 
 ## Author Info
 
 **Victor**
 
-- LinkedIn: [Your LinkedIn Profile](https://www.linkedin.com/in/victor-oluwayemi-2b733318a/?lipi=urn%3Ali%3Apage%3Ad_flagship3_feed%3BHo4XGyNWQUCw0jykLPqW7Q%3D%3D)
+- [LinkedIn](https://www.linkedin.com/in/victor-oluwayemi-2b733318a/?lipi=urn%3Ali%3Apage%3Ad_flagship3_feed%3BHo4XGyNWQUCw0jykLPqW7Q%3D%3D)
 
 ---
 

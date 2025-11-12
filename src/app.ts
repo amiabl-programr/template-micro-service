@@ -1,16 +1,16 @@
 import Fastify from "fastify";
 import type { FastifyInstance } from "fastify";
-// import logger from "./config/logger.ts";
 import prisma from "./plugins/prisma.ts";
 import healthRoute from "./routes/health.route.ts";
 import templatesRoute from "./routes/templates.route.ts";
 import dotenv from "dotenv";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
+import { loggerOptions } from './config/logger.ts';
 dotenv.config();
 
 export const fastify_app = (): FastifyInstance => {
-  const app = Fastify({ logger: true });
+  const app = Fastify({ logger: loggerOptions });
 
   // register swagger
   app.register(swagger, {

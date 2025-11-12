@@ -33,16 +33,12 @@ To get this Template Service API up and running on your local machine, follow th
 3.  **Setup Database**:
     Ensure you have a PostgreSQL database instance running and accessible. Update the `DATABASE_URL` in your `.env` file accordingly.
 4.  **Run Prisma Migrations**:
-    Apply the database schema and create necessary tables:
+    Apply the database schema and create the necessary tables:
     ```bash
     npx prisma migrate dev --name init
     ```
-    This command will apply any pending migrations and keep your database schema in sync.
+    This command applies any pending migrations and keeps your database schema in sync.
 5.  **Start the Service**:
-    To start the application in development mode with hot-reloading:
-    ```bash
-    npm run start
-    ```
     For a production-like environment:
     ```bash
     npm run dev
@@ -50,7 +46,7 @@ To get this Template Service API up and running on your local machine, follow th
 
 ### Environment Variables
 
-All required environment variables must be defined in a `.env` file in the project root. A sample `.env.example` is provided.
+All required environment variables must be defined in a `.env` file in the project root. A sample `.env` example is provided.
 
 - `DATABASE_URL`: Your PostgreSQL connection string.
   - Example: `postgresql://user:password@localhost:5432/template_db?schema=public`

@@ -3,7 +3,12 @@ import { PrismaClient } from '../generated/prisma/client.ts';
 
 export default fp(async (fastify) => {
   const prisma = new PrismaClient()
-  await prisma.$connect()
+  try{
+    await prisma.$connect()
+  } catch (e) {
+    console.error('Prisma connection error:', e)
+    throw e
+  }
 
   fastify.decorate('prisma', prisma)
 

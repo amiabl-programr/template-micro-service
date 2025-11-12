@@ -3,6 +3,7 @@ import type { FastifyInstance } from "fastify";
 import prisma from "./plugins/prisma.ts";
 import healthRoute from "./routes/health.route.ts";
 import templatesRoute from "./routes/templates.route.ts";
+import homeRoute from "./routes/home.route.ts";
 import dotenv from "dotenv";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
@@ -48,6 +49,7 @@ export const fastify_app = (): FastifyInstance => {
   // register plugins
   app.register(prisma);
   app.register(healthRoute);
+  app.register(homeRoute);
   app.register(templatesRoute);
 
   return app;

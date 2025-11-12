@@ -26,6 +26,10 @@ export const fastify_app = (): FastifyInstance => {
           url: "http://localhost:3000",
           description: "Development server",
         },
+        {
+          url: "https://template-micro-service-production.up.railway.app",
+          description: "Live server",
+        },
       ],
       tags: [{ name: "templates", description: "Email templates endpoint" }],
     },

@@ -1,6 +1,4 @@
-import type { FastifyRequest, FastifyReply } from "fastify";
 import { Prisma, PrismaClient } from "../generated/prisma/client.ts";
-
 type PrismaTransactionClient = Prisma.TransactionClient;
 
 /**
@@ -33,6 +31,7 @@ export const create_template_version = async (
     return version;
   } catch (error) {
     console.error("Error creating template version:", error);
+
     throw error;
   }
 };

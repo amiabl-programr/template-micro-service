@@ -7,7 +7,7 @@ import homeRoute from "./routes/home.route.ts";
 import dotenv from "dotenv";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
-import { loggerOptions } from './config/logger.ts';
+import { loggerOptions } from "./config/logger.ts";
 dotenv.config();
 
 export const fastify_app = (): FastifyInstance => {

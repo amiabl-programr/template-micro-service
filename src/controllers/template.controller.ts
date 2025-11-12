@@ -1,5 +1,6 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
 import { create_template_version } from "./template-version.controller.ts";
+import { Prisma } from "../generated/prisma/client.ts";
 
 interface CreateTemplateBody {
   name: string;
@@ -38,7 +39,7 @@ export const get_templates = async (
     const searchQuery = request.query.query;
 
     const offset = (page - 1) * limit;
-    const where: any = {};
+    const where: Prisma.TemplateWhereInput = {};
 
     if (language) {
       where.language = language;
